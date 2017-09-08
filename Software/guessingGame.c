@@ -112,25 +112,24 @@ int checkGuess(int num, int guess) {
 
 // Write the current value entered on SW to RGB LEDs in blue
 void displayGuess(int guess) {
-   u16 rgb_leds = 0x000;
-   u16 mask = 0x001;
+   u16 rgb_leds = 00000;
+   u16 mask = 00001;
    for (int i = 0; i < 4; i++) {
-      mask <<= 3 - i;
-      rgb_leds <<= 2;
-      rgb_leds += guess & mask;
-      mask = 0x1;
+      if (guess & mask) {
+         rgb_leds |= (mask << i * 2);
+      }
+      mask <<= 1;
    }
    WRITE_RGB_LEDS(rgb_leds);
-   WRITE_RGB_LEDS(0x000); // Modulate RGB LED brightness
+   WRITE_RGB_LEDS(00000); // Modulate RGB LED brightness
 }
 
 // Display the number of chances left by lighting up the corresponding LEDs
 // LEDs turn off from the left as chances decrease
 void displayChances(int chances) {
-   u16 leds = 0x0;
-   for (int i = 0; i < chances; i++) {
-      leds <<= 1;
-      leds++;
+   u16 leds = 0xF;
+   for (int i = 0; i < 4 - chances; i++) {
+      leds >>= 1;
    }
    WRITE_LEDS(leds);
 }
@@ -149,15 +148,15 @@ void blinkLEDS() {
    for (int i = 0; i < 3; i ++) {
       WRITE_LEDS(0xF);
       for (int j = 0; j < 8000; j++) {
-         WRITE_RGB_LEDS(0x924);
+         WRITE_RGB_LEDS(04444);
          for (int k = 0; k < 50; k++) {
-            WRITE_RGB_LEDS(0x000); // Modulate RGB LED brightness
+            WRITE_RGB_LEDS(00000); // Modulate RGB LED brightness
          }
       }
 
       WRITE_LEDS(0x0);
       for (int j = 0; j < 280000; j++) {
-         WRITE_RGB_LEDS(0x000);
+         WRITE_RGB_LEDS(00000);
       }
    }
 }
